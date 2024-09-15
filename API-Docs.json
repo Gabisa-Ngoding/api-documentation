@@ -1,0 +1,425 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "????",
+    "description": "API Documentation of ???",
+    "version": "1.0.0",
+    "license": {
+      "identifier": "Tim Gabisa Ngoding",
+      "name": "Gabisa Ngoding"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "User Register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "confirm_password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        },
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "default": null
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "User Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login Succeed",
+            "headers": {
+              "Authorization": {
+                "schema": {
+                  "type": "string",
+                  "description": "Bearer {token}"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        },
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request from client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "default": null
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User Already Login & Wrong Credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "default": null
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/user": {
+      "get": {
+        "summary": "Get Data Logged User",
+        "tags": [
+          "Authentication"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get user data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "default": null
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update User Data",
+        "tags": [
+          "Authentication"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer Token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Update User Data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request from client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "default": null
+                    },
+                    "errors": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "default": null
+                    },
+                    "errors": {
+                      "default": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
